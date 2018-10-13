@@ -1,3 +1,33 @@
+class VisibilityToggle extends React.Component {
+    constructor(props){
+        super(props);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.state = {
+            show: false
+        }
+    }
+
+    handleToggle(){
+        this.setState((prevState) => {
+            return {
+                show: !prevState.show
+            }
+        });
+    }
+
+    render(){
+        return (
+            <div>
+                <button onClick={this.handleToggle}>{this.state.show ? 'hide' : 'show'}</button>
+                <p>{this.state.show ? 'Hi' : ''}</p>
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(<VisibilityToggle />, document.getElementById('app'));
+
+/*
 console.log('build-it-visible.js is running!');
 
 const app = {
@@ -48,3 +78,4 @@ const render = () => {
 };
 
 render();
+*/
