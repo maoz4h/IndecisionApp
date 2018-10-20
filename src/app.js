@@ -3,8 +3,9 @@ class IndecisionApp extends React.Component {
         super(props);
         this.handleDeleteOptions = this.handleDeleteOptions.bind(this);
         this.handlePick = this.handlePick.bind(this);
+        this.handleAddOption = this.handleAddOption.bind(this);
         this.state = {
-            options: ['one', 'two', 'three']
+            options: []
         };
     }
     
@@ -18,6 +19,20 @@ class IndecisionApp extends React.Component {
         this.setState(() => {
             return {
                 options: []
+            };
+        });
+    }
+
+    handleAddOption(option){
+        if (!option){
+            return 'Enter a valid value to add item';
+        }
+        else if (this.state.options.indexOf(option) > -1){
+            return 'This item already exists';            
+        }
+        this.setState((prevState) => {
+            return {
+                options: prevState.options.concat([option])    
             };
         });
     }
@@ -37,7 +52,8 @@ class IndecisionApp extends React.Component {
                     options={this.state.options}
                     handleDeleteOptions={this.handleDeleteOptions}
                 />
-                <AddOption />
+                <AddOption 
+                handleAddOption = {this.handleAddOption}/>
             </div>
         );
     }
@@ -94,17 +110,29 @@ class Option extends React.Component {
 }
 
 class AddOption extends React.Component {
-    handleAddOption(e){
-        e.preventDefault(); //prevents page refresh when submitting the form
-
-        const option  = e.target.elements.option.value.trim();
-    
-        if (option) {
-            console.log(option);
-        }
-
+    constructor(props){
+        super(props);
+        this.handleAddOption = this.handleAddOption.bind(this);
+        this.state = {
+            error: undefined
+        };
     }
 
+    handleAddOption(e){
+        e.preventDefault();
+
+        const option = e.target.elements.option.value.trim();
+
+        const error = this.props.handleAddOption(option);
+        if (!error){
+            e.target.elements.option.value = '';
+        }
+
+        this.setState(() => {
+            return { error };
+        });
+    }
+    
     render(){
         return (
             <div>
@@ -112,6 +140,7 @@ class AddOption extends React.Component {
                     <input type="text" name="option"/>
                     <button>Add Option</button>
                 </form>
+                {this.state.error && <p>{this.state.error}</p>}
             </div>
         );
     }
